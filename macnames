@@ -1,0 +1,37 @@
+#!/bin/sh
+# macnames - Get or set all macOS device names at once
+
+set -u
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+MAC_NAME_KEYS="ComputerName LocalHostName HostName"
+
+# Abort script with error message.
+abort() {
+	echo "${0##*/}: $*" >&2
+	exit 1
+}
+
+if [ "$#" -gt 0 ]; then
+	# Set all device names when argument given.
+	[ "$#" -eq 1 ] || abort "please provide only one argument as name"
+
+	name="$1"
+
+	# Validate name: must match DNS-safe pattern
+	echo "$name" | grep -qE '^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?$' \
+		|| abort "name must contain only letters, digits, or hyphens, and not start or end with a hyphen"
+
+	[ "$(id -u)" -eq 0 ] || abort "please run as root to set system names"
+
+	for key in ${MAC_NAME_KEYS}; do
+		scutil --set "${key}" "${name}"
+		printf '%s:\t%s\n' "${key}" "${name}"
+	done
+else
+	# Get all device names when no argument given.
+	for key in ${MAC_NAME_KEYS}; do
+		name=$(scutil --get "${key}" 2>/dev/null)
+		printf '%s:\t%s\n' "${key}" "${name:--}"
+	done
+fi
