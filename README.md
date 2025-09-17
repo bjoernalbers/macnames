@@ -13,7 +13,8 @@ This shell script allows you to **get or set all three names at once** using `sc
 ### Show current names (no install required)
 
 ```sh
-curl -fsSL https://github.com/bjoernalbers/macnames/releases/latest/download/macnames | sh -s
+curl -fsSL https://github.com/bjoernalbers/macnames/releases/latest/download/macnames \
+    | sh -s
 ```
 
 Sample output:
@@ -27,7 +28,8 @@ HostName:       -
 ### Set all names (requires sudo)
 
 ```
-curl -fsSL https://github.com/bjoernalbers/macnames/releases/latest/download/macnames | sudo sh -s -- "Mac3000"
+curl -fsSL https://github.com/bjoernalbers/macnames/releases/latest/download/macnames \
+    | sudo sh -s -- "Mac3000"
 ```
 
 This will set all three system names to "Mac3000".
